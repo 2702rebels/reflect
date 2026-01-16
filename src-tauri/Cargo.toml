@@ -1,6 +1,6 @@
 [package]
 name = "reflect"
-version = "2025.0.6"
+version = "2026.0.1"
 description = "Multi-purpose visual dashboard tool for FIRST Robotics ecosystem"
 authors = ["Oleg Grodzevich <oleg.grodzevich@gmail.com>"]
 edition = "2021"
@@ -15,9 +15,9 @@ tauri = { version = "2.9.5", features = [] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tauri-plugin = "2.5.2"
-tauri-plugin-store = "2.4.1"
-tauri-plugin-dialog = "2.4.2"
-tauri-plugin-fs = "2.4.4"
+tauri-plugin-store = "2.4.2"
+tauri-plugin-dialog = "2.6.0"
+tauri-plugin-fs = "2.4.5"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!

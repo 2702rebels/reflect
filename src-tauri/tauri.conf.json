@@ -1,7 +1,7 @@
 {
   "productName": "Reflect",
   "mainBinaryName": "reflect",
-  "version": "2025.0.6",
+  "version": "2026.0.1",
   "identifier": "com.2702rebels",
   "build": {
     "beforeDevCommand": "pnpm dev",
@@ -27,7 +27,7 @@
     },
     "windows": [
       {
-        "title": "Reflect v2025.0.6",
+        "title": "Reflect v2026.0.1",
         "width": 1200,
         "height": 800,
         "resizable": true,
