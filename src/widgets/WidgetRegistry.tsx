@@ -10,6 +10,7 @@ import { WidgetPowerPdhDescriptor, WidgetPowerPdpDescriptor } from "./WidgetPowe
 import { WidgetReefAlgaeDescriptor } from "./WidgetReefAlgae";
 import { WidgetReefCoralDescriptor } from "./WidgetReefCoral";
 import { WidgetSliderDescriptor } from "./WidgetSlider";
+import { WidgetSwerveDescriptor } from "./WidgetSwerve";
 import { WidgetToggleDescriptor } from "./WidgetToggle";
 import { WidgetValueDescriptor } from "./WidgetValue";
 
@@ -29,6 +30,7 @@ export const WidgetRegistry: Record<WidgetType, WidgetDescriptor> = [
   WidgetPowerPdhDescriptor,
   WidgetPowerPdpDescriptor,
   WidgetGyroDescriptor,
+  WidgetSwerveDescriptor,
   WidgetCameraDescriptor,
   // WidgetRobot3dDescriptor,
   WidgetReefCoralDescriptor,
