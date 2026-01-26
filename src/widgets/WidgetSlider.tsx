@@ -170,7 +170,7 @@ const Editor = ({ props, onPropsChange }: WidgetEditorProps<PropsType>) => {
             onChange={(v) =>
               onPropsChange({
                 ...props,
-                max: Number.isFinite(v) ? v : propsSchema.shape.step.def.defaultValue,
+                step: Number.isFinite(v) ? v : propsSchema.shape.step.def.defaultValue,
               })
             }
           />
