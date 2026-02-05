@@ -27,7 +27,6 @@ const numericFormat = z.object({
 const propsSchema = z.object({
   title: z.string().optional(),
   interactive: z.boolean().optional(),
-  // when true the slider will be rendered vertically
   vertical: z.boolean().default(false),
   valueFormat: numericFormat.optional(),
   min: z.number().default(-1),
@@ -82,7 +81,7 @@ const Component = ({ mode, slot, data, props, publish }: WidgetComponentProps<Pr
       </div>
       {d != null && (
         // render either vertical or horizontal layout depending on prop
-        (vertical && vertical === true) ? (
+        (vertical === true) ? (
           <div
             className={cn(
               "mx-3 my-1 flex flex-auto flex-row items-center justify-center gap-4",
