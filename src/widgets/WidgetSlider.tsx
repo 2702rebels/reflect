@@ -80,45 +80,17 @@ const Component = ({ mode, slot, data, props, publish }: WidgetComponentProps<Pr
         </div>
       </div>
       {d != null && (
-        // render either vertical or horizontal layout depending on prop
-        (vertical === true) ? (
-          <div
-            className={cn(
-              "mx-3 my-1 flex flex-auto flex-row items-center justify-center gap-4",
-              preview && "opacity-25"
-            )}
-          >
-            <div className="flex flex-col justify-between h-full">
-              <TruncateText className="font-mono text-xs">
-                {Format.default.number(props.max, {
-                  maximumFractionDigits: props.valueFormat?.maximumFractionDigits,
-                })}
-              </TruncateText>
-              <TruncateText className="font-mono text-xs">
-                {Format.default.number(props.min, {
-                  maximumFractionDigits: props.valueFormat?.maximumFractionDigits,
-                })}
-              </TruncateText>
-            </div>
-
-            <div className="flex h-full items-center">
-              <Slider
-                aria-label="Value"
-                orientation="vertical"
-                value={[d]}
-                disabled={!interactive}
-                onValueChange={interactive ? handleChange : undefined}
-                min={props.min}
-                max={props.max}
-                step={props.step}
-                className="h-full"
-              />
-            </div>
-          </div>
-        ) : (
-          <div className={cn("mx-3 my-1 flex flex-auto flex-col justify-center gap-2", preview && "opacity-25")}>
+        <div
+          className={cn(
+            "mx-3 my-1 flex flex-auto justify-center gap-2",
+            preview && "opacity-25",
+            props.vertical && "flex-row items-center",
+            !props.vertical && "flex-col"
+          )}>
+          <div className={cn("flex items-center", props.vertical && "h-full", !props.vertical && "w-full")}>
             <Slider
               aria-label="Value"
+              orientation={props.vertical ? "vertical" : "horizontal"}
               value={[d]}
               disabled={!interactive}
               onValueChange={interactive ? handleChange : undefined}
@@ -126,20 +98,25 @@ const Component = ({ mode, slot, data, props, publish }: WidgetComponentProps<Pr
               max={props.max}
               step={props.step}
             />
-            <div className="flex justify-between">
-              <TruncateText className="font-mono text-xs">
-                {Format.default.number(props.min, {
-                  maximumFractionDigits: props.valueFormat?.maximumFractionDigits,
-                })}
-              </TruncateText>
-              <TruncateText className="font-mono text-xs">
-                {Format.default.number(props.max, {
-                  maximumFractionDigits: props.valueFormat?.maximumFractionDigits,
-                })}
-              </TruncateText>
-            </div>
           </div>
-        )
+          <div
+            className={cn(
+              "flex justify-between",
+              props.vertical && "h-full flex-col",
+              !props.vertical && "w-full flex-row"
+            )}>
+            <TruncateText className="font-mono text-xs">
+              {Format.default.number(props.vertical ? props.max : props.min, {
+                maximumFractionDigits: props.valueFormat?.maximumFractionDigits,
+              })}
+            </TruncateText>
+            <TruncateText className="font-mono text-xs">
+              {Format.default.number(props.vertical ? props.min : props.max, {
+                maximumFractionDigits: props.valueFormat?.maximumFractionDigits,
+              })}
+            </TruncateText>
+          </div>
+        </div>
       )}
     </div>
   );
