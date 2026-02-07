@@ -84,10 +84,9 @@ const Component = ({ mode, slot, data, props, publish }: WidgetComponentProps<Pr
           className={cn(
             "mx-3 my-1 flex flex-auto justify-center gap-2",
             preview && "opacity-25",
-            props.vertical && "flex-row items-center",
-            !props.vertical && "flex-col"
+            props.vertical ? "flex-row items-center" : "flex-col"
           )}>
-          <div className={cn("flex items-center", props.vertical && "h-full", !props.vertical && "w-full")}>
+          <div className={cn("flex items-center", props.vertical ? "h-full" : "w-full")}>
             <Slider
               aria-label="Value"
               orientation={props.vertical ? "vertical" : "horizontal"}
@@ -99,12 +98,7 @@ const Component = ({ mode, slot, data, props, publish }: WidgetComponentProps<Pr
               step={props.step}
             />
           </div>
-          <div
-            className={cn(
-              "flex justify-between",
-              props.vertical && "h-full flex-col",
-              !props.vertical && "w-full flex-row"
-            )}>
+          <div className={cn("flex justify-between", props.vertical ? "h-full flex-col" : "w-full flex-row")}>
             <TruncateText className="font-mono text-xs">
               {Format.default.number(props.vertical ? props.max : props.min, {
                 maximumFractionDigits: props.valueFormat?.maximumFractionDigits,
