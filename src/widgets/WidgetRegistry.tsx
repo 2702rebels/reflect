@@ -4,6 +4,7 @@ import { WidgetChartLineDescriptor } from "./WidgetChartLine";
 import { WidgetChooserDescriptor } from "./WidgetChooser";
 import { WidgetColorDescriptor } from "./WidgetColor";
 import { WidgetField2dDescriptor } from "./WidgetField2d";
+import { WidgetField2dx3Descriptor } from "./WidgetField2dx3";
 import { WidgetFMSDescriptor } from "./WidgetFMS";
 import { WidgetGyroDescriptor } from "./WidgetGyro";
 import { WidgetMatchTimeDescriptor } from "./WidgetMatchTime";
@@ -25,6 +26,7 @@ export const WidgetRegistry: Record<WidgetType, WidgetDescriptor> = [
   WidgetChooserDescriptor,
   WidgetSliderDescriptor,
   WidgetField2dDescriptor,
+  WidgetField2dx3Descriptor,
   WidgetFMSDescriptor,
   WidgetMatchTimeDescriptor,
   WidgetAlertsDescriptor,

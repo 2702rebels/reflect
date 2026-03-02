@@ -71,6 +71,7 @@ const WidgetPropsEditorPanel = ({ disabled, widgetId }: ModalProps & WidgetProps
           onPropsChange: (v) => updateWidgetProps(widgetId, v),
           props,
           disabled,
+          slot,
         })}
       </ScrollArea>
     </>

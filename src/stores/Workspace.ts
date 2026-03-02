@@ -135,6 +135,13 @@ const getSlots = (dashboards: WorkspaceStore["dashboards"]) => {
       if (widget.slot) {
         set.add(widget.slot);
       }
+      if (widget.descriptor.extraSlots && widget.props) {
+        for (const slot of widget.descriptor.extraSlots(widget.props)) {
+          if (slot) {
+            set.add(slot);
+          }
+        }
+      }
     }
   }
 
@@ -360,6 +367,9 @@ export const useWorkspaceStore = create(
           const widget = getDashboard(draft, dashboardId)?.widgets[widgetId];
           if (widget) {
             widget.props = props;
+            if (!draft.designMode) {
+              draft.slots = getSlots(draft.dashboards);
+            }
           }
         }),
 

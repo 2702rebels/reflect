@@ -1,7 +1,7 @@
 {
   "name": "@2702rebels/reflect",
   "description": "Modern dashboard for FIRST Robotics ecosystem",
-  "version": "2026.0.4",
+  "version": "2026.0.5",
   "type": "module",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
@@ -41,7 +41,6 @@
     "@radix-ui/react-tooltip": "1.2.8",
     "@react-three/drei": "10.7.7",
     "@react-three/fiber": "9.5.0",
-    "@tauri-apps/api": "2.9.1",
     "@tauri-apps/plugin-dialog": "2.6.0",
     "@tauri-apps/plugin-fs": "2.4.5",
     "@tauri-apps/plugin-store": "2.4.2",
@@ -80,6 +79,7 @@
     "@2702rebels/typescript-config": "1.0.0",
     "@ianvs/prettier-plugin-sort-imports": "4.7.0",
     "@tailwindcss/vite": "4.1.18",
+    "@tauri-apps/api": "2.10.1",
     "@tauri-apps/cli": "2.9.6",
     "@types/d3-array": "3.2.2",
     "@types/d3-scale": "4.0.9",

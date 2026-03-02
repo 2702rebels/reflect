@@ -1,7 +1,7 @@
 {
   "productName": "Reflect",
   "mainBinaryName": "reflect",
-  "version": "2026.0.4",
+  "version": "2026.0.5",
   "identifier": "com.2702rebels",
   "build": {
     "beforeDevCommand": "pnpm dev",

@@ -21,6 +21,7 @@ export const WidgetTypeValues = [
   "swerve",
   "2025.reef.coral",
   "2025.reef.algae",
+  "field2dx3",
 ] as const;
 
 const WidgetType = z.enum(WidgetTypeValues);
