@@ -27,12 +27,7 @@ const transform = (dataType: DataType, records: ReadonlyArray<DataChannelRecord>
   }
 
   const value = records.at(-1)?.value;
-
-  if (typeof value === "boolean") {
-    return value;
-  }
-
-  return undefined;
+  return typeof value === "boolean" ? value : undefined;
 };
 
 const Component = ({ mode, slot, data, props, publish }: WidgetComponentProps<PropsType>) => {

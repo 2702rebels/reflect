@@ -47,7 +47,6 @@ const transform = (dataType: DataType, records: ReadonlyArray<DataChannelRecord>
 
 const Component = ({ mode, slot, data, props, publish }: WidgetComponentProps<PropsType>) => {
   const interactive = props.interactive;
-  const vertical = props.vertical;
   const handleChange = useCallback(
     (v: Array<number>) => {
       if (interactive && publish) {

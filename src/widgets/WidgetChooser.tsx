@@ -140,7 +140,7 @@ const Editor = ({ props, onPropsChange }: WidgetEditorProps<PropsType>) => {
 export const WidgetChooserDescriptor: WidgetDescriptor<PropsType> = {
   type: "chooser",
   name: "Chooser",
-  icon: "square-tasks",
+  icon: "square-chooser",
   description: "Value chooser from a set of options",
   width: 10,
   height: 5,
