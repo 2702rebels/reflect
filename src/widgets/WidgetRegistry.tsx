@@ -1,6 +1,7 @@
 import { WidgetAlertsDescriptor } from "./WidgetAlerts";
 import { WidgetCameraDescriptor } from "./WidgetCamera";
 import { WidgetChartLineDescriptor } from "./WidgetChartLine";
+import { WidgetChecklistDescriptor } from "./WidgetChecklist";
 import { WidgetChooserDescriptor } from "./WidgetChooser";
 import { WidgetColorDescriptor } from "./WidgetColor";
 import { WidgetField2dDescriptor } from "./WidgetField2d";
@@ -30,6 +31,7 @@ export const WidgetRegistry: Record<WidgetType, WidgetDescriptor> = [
   WidgetFMSDescriptor,
   WidgetMatchTimeDescriptor,
   WidgetAlertsDescriptor,
+  WidgetChecklistDescriptor,
   WidgetChartLineDescriptor,
   WidgetGaugeRadialDescriptor,
   WidgetGaugeLinearDescriptor,

@@ -20,6 +20,7 @@ export const WidgetTypeValues = [
   "fms",
   "match.time",
   "alerts",
+  "checklist",
   "swerve",
   "2025.reef.coral",
   "2025.reef.algae",
