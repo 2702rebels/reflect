@@ -41,7 +41,6 @@ const propsSchema = z.object({
   valueVisible: z.boolean().default(true),
   axisVisible: z.boolean().default(true),
   valueFormat: numericFormat.optional(),
-  mono: z.boolean().default(true),
   min: z.number().default(3),
   max: z.number().default(13),
   thresholdLo: z.number().optional(),
@@ -406,7 +405,6 @@ export const WidgetGaugeLinearDescriptor: WidgetDescriptor<PropsType> = {
       labelVisible: propsSchema.shape.labelVisible.def.defaultValue,
       valueVisible: propsSchema.shape.valueVisible.def.defaultValue,
       axisVisible: propsSchema.shape.axisVisible.def.defaultValue,
-      mono: propsSchema.shape.mono.def.defaultValue,
       valueFormat: {
         maximumFractionDigits: 1,
       },

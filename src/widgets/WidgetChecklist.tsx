@@ -65,8 +65,8 @@ const Component = ({ mode, slot, namedData, props }: WidgetComponentProps<PropsT
             const v = channel.slot ? (namedData?.[channel.slot]?.value as ReturnType<typeof transform>) : undefined;
             return (
               <Fragment key={`_${index}`}>
-                {v ? <CircleCheck className="text-green-600" /> : <Circle />}
-                {channel.label}
+                {v ? <CircleCheck className="text-green-600" /> : <Circle className="text-muted-foreground" />}
+                <div className={v ? undefined : "text-muted-foreground"}>{channel.label}</div>
               </Fragment>
             );
           })
