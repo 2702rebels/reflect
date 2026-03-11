@@ -1,7 +1,7 @@
 {
   "name": "@2702rebels/reflect",
   "description": "Modern dashboard for FIRST Robotics ecosystem",
-  "version": "2026.0.4",
+  "version": "2026.0.5",
   "type": "module",
   "scripts": {
     "preinstall": "npx only-allow pnpm",

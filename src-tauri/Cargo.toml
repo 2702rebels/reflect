@@ -1,6 +1,6 @@
 [package]
 name = "reflect"
-version = "2026.0.4"
+version = "2026.0.5"
 description = "Multi-purpose visual dashboard tool for FIRST Robotics ecosystem"
 authors = ["Oleg Grodzevich <oleg.grodzevich@gmail.com>"]
 edition = "2021"

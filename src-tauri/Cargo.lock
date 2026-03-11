@@ -2503,7 +2503,7 @@ dependencies = [
 
 [[package]]
 name = "reflect"
-version = "2026.0.4"
+version = "2026.0.5"
 dependencies = [
  "serde",
  "serde_json",
