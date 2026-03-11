@@ -1,20 +1,16 @@
-import { Trash2 } from "lucide-react";
 import { Fragment, useCallback } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
 import { Format } from "@2702rebels/shared/format";
 import { AdaptiveContainer } from "@ui/adaptive-container";
-import { Button } from "@ui/button";
 import { Input } from "@ui/input";
 import { InputNumber } from "@ui/input-number";
-import { Label } from "@ui/label";
 import { TruncateText } from "@ui/truncate-text";
 
 import { cn } from "../lib/utils";
-import { WidgetSlotSelect } from "../parts/WidgetSlotSelect";
 import { EditorBlock } from "./parts/EditorBlock";
 import { EditorContainer } from "./parts/EditorContainer";
+import { EditorMultiChannels } from "./parts/EditorMultiChannels";
 import { EditorSectionHeader } from "./parts/EditorSectionHeader";
 import { EditorSwitchBlock } from "./parts/EditorSwitchBlock";
 import { GaugeLinear } from "./parts/GaugeLinear";
@@ -26,14 +22,6 @@ import type { WidgetComponentProps, WidgetDescriptor, WidgetEditorProps } from "
 
 const defaultSize = 40;
 const narrowSize = 20;
-
-function replaceAt<T>(array: ReadonlyArray<T>, index: number, value: T): Array<T> {
-  return [...array.slice(0, index), value, ...array.slice(index + 1)];
-}
-
-function removeAt<T>(array: ReadonlyArray<T>, index: number): Array<T> {
-  return [...array.slice(0, index), ...array.slice(index + 1)];
-}
 
 const numericFormat = z.object({
   maximumFractionDigits: z.number().nonnegative().optional(),
@@ -229,16 +217,7 @@ const Component = ({ mode, slot, data, namedData, props }: WidgetComponentProps<
   );
 };
 
-const Editor = ({ props, onPropsChange, onSlotsChange, slots, descriptor }: WidgetEditorProps<PropsType>) => {
-  // NOTE: channels.slot are just numeric indices, that should match the corresponding keys in the namedSlots
-
-  const onAddChannel = useCallback(() => {
-    onPropsChange({
-      ...props,
-      channels: [...props.channels, { label: "", slot: uuidv4() }],
-    });
-  }, [props, onPropsChange]);
-
+const Editor = ({ props, onPropsChange, ...other }: WidgetEditorProps<PropsType>) => {
   return (
     <EditorContainer>
       <EditorBlock label="Title">
@@ -286,67 +265,13 @@ const Editor = ({ props, onPropsChange, onSlotsChange, slots, descriptor }: Widg
           })
         }
       />
-      {props.channels.length > 0 && (
-        <div className="grid grid-cols-[155px_minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 px-4">
-          <Label>Label</Label>
-          <Label>Slot</Label>
-          <div />
-          {props.channels.map((channel, index) => (
-            <Fragment key={`_${index}`}>
-              <Input
-                value={channel.label ?? ""}
-                onChange={(ev) =>
-                  onPropsChange({
-                    ...props,
-                    channels: replaceAt(props.channels, index, {
-                      ...channel,
-                      label: ev.currentTarget.value,
-                    }),
-                  })
-                }
-                placeholder="Optional widget title"
-              />
-              <WidgetSlotSelect
-                slot={descriptor.slot}
-                value={channel.slot ? slots?.[channel.slot] : undefined}
-                onChange={(v) => {
-                  // should always be defined if the settings are properly constructed
-                  if (channel.slot != null) {
-                    const newSlots = { ...slots };
-                    if (v == null) {
-                      delete newSlots[channel.slot];
-                    } else {
-                      newSlots[channel.slot] = v;
-                    }
-
-                    onSlotsChange(newSlots);
-                  }
-                }}
-              />
-              <Button
-                variant="ghost"
-                className="size-8"
-                onClick={() =>
-                  onPropsChange({
-                    ...props,
-                    channels: removeAt(props.channels, index),
-                  })
-                }>
-                <Trash2 className="size-4 shrink-0" />
-              </Button>
-            </Fragment>
-          ))}
-        </div>
-      )}
       {props.multiple && (
         <>
-          <Button
-            className="mx-4 w-fit"
-            variant="secondary"
-            size="sm"
-            onClick={onAddChannel}>
-            Add channel
-          </Button>
+          <EditorMultiChannels
+            props={props}
+            onPropsChange={onPropsChange}
+            {...other}
+          />
           <EditorSwitchBlock
             label="Show individual channel label"
             checked={props.labelVisible}

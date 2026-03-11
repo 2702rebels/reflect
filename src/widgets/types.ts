@@ -89,6 +89,8 @@ export type WidgetDescriptor<P = unknown> = Readonly<{
       lookback?: number;
       /** Default channel binding */
       defaultChannel?: string;
+      /** Ignored (used with multi-channel widgets) */
+      ignored?: boolean;
     }>;
   /** Named data slots definitions */
   slots?: Record<string, WidgetDescriptorSlot<P>>;
@@ -108,3 +110,10 @@ export type WidgetDescriptor<P = unknown> = Readonly<{
   /** Season-specific widget. */
   season?: number;
 }>;
+
+export type WidgetPropsWithMultipleChannels = {
+  channels: Array<{
+    label?: string;
+    slot?: string;
+  }>;
+};

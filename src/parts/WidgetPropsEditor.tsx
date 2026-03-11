@@ -38,41 +38,45 @@ const WidgetPropsEditorPanel = ({ disabled, widgetId }: ModalProps & WidgetProps
         <p className="flex gap-2 text-sm text-muted-foreground">{descriptor.description}</p>
       </div>
       <ScrollArea className="flex-1">
-        <EditorBlock
-          label={
-            <div className="flex items-center justify-between">
-              Slot binding
-              {slot && (
-                <Button
-                  onClick={() => handleSlotChange(undefined)}
-                  className="-my-3"
-                  variant="link"
-                  size="sm">
-                  Reset
-                </Button>
-              )}
-            </div>
-          }
-          className="pt-4">
-          <WidgetSlotSelect
-            slot={descriptor.slot}
-            value={slot}
-            onChange={handleSlotChange}
-          />
-        </EditorBlock>
-        <EditorBlock
-          label="Lookback period (seconds)"
-          className="pt-4">
-          <InputNumber
-            aria-label="Lookback period (seconds)"
-            value={lookback ?? 0}
-            minValue={0}
-            maxValue={180}
-            step={1}
-            onChange={(v) => updateWidgetLookback(widgetId, v)}
-            isDisabled={disabled}
-          />
-        </EditorBlock>
+        {descriptor.slot?.ignored != true && (
+          <EditorBlock
+            label={
+              <div className="flex items-center justify-between">
+                Slot binding
+                {slot && (
+                  <Button
+                    onClick={() => handleSlotChange(undefined)}
+                    className="-my-3"
+                    variant="link"
+                    size="sm">
+                    Reset
+                  </Button>
+                )}
+              </div>
+            }
+            className="pt-4">
+            <WidgetSlotSelect
+              slot={descriptor.slot}
+              value={slot}
+              onChange={handleSlotChange}
+            />
+          </EditorBlock>
+        )}
+        {descriptor.slot?.lookback != null && (
+          <EditorBlock
+            label="Lookback period (seconds)"
+            className="pt-4">
+            <InputNumber
+              aria-label="Lookback period (seconds)"
+              value={lookback ?? 0}
+              minValue={0}
+              maxValue={180}
+              step={1}
+              onChange={(v) => updateWidgetLookback(widgetId, v)}
+              isDisabled={disabled}
+            />
+          </EditorBlock>
+        )}
         {descriptor.props?.editor({
           descriptor,
           props,
