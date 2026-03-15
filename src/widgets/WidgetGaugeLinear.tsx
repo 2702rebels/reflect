@@ -11,21 +11,19 @@ import { cn } from "../lib/utils";
 import { EditorBlock } from "./parts/EditorBlock";
 import { EditorContainer } from "./parts/EditorContainer";
 import { EditorMultiChannels } from "./parts/EditorMultiChannels";
+import { EditorNumericValueBlock } from "./parts/EditorNumericValueBlock";
 import { EditorSectionHeader } from "./parts/EditorSectionHeader";
 import { EditorSwitchBlock } from "./parts/EditorSwitchBlock";
 import { GaugeLinear } from "./parts/GaugeLinear";
 import { Slot } from "./slot";
-import { withPreview } from "./utils";
+import { numericFormat, numericTransform } from "./types";
+import { applyNumericTransform, withPreview } from "./utils";
 
 import type { DataChannelRecord, DataType } from "@2702rebels/wpidata/abstractions";
 import type { WidgetComponentProps, WidgetDescriptor, WidgetEditorProps } from "./types";
 
 const defaultSize = 40;
 const narrowSize = 20;
-
-const numericFormat = z.object({
-  maximumFractionDigits: z.number().nonnegative().optional(),
-});
 
 const propsSchema = z.object({
   title: z.string().optional(),
@@ -41,6 +39,7 @@ const propsSchema = z.object({
   valueVisible: z.boolean().default(true),
   axisVisible: z.boolean().default(true),
   valueFormat: numericFormat.optional(),
+  valueTransform: numericTransform.optional(),
   min: z.number().default(3),
   max: z.number().default(13),
   thresholdLo: z.number().optional(),
@@ -62,7 +61,7 @@ const Component = ({ mode, slot, data, namedData, props }: WidgetComponentProps<
   const [d, preview] = withPreview(mode, data as ReturnType<typeof transform>, 123);
 
   const formatNumeric = useCallback(
-    (v: number) =>
+    (v: number | undefined) =>
       Format.default.number(v, {
         maximumFractionDigits: props.valueFormat?.maximumFractionDigits,
       }),
@@ -77,11 +76,9 @@ const Component = ({ mode, slot, data, namedData, props }: WidgetComponentProps<
           className="text-sm font-bold">
           {mode === "template" ? "Preview" : props.title || Slot.formatAsTitle(slot)}
         </TruncateText>
-        {!props.multiple && (
+        {!props.multiple && d != null && (
           <div className="font-mono text-sm font-bold">
-            {Format.default.number(d, {
-              maximumFractionDigits: 1,
-            })}
+            {formatNumeric(applyNumericTransform(d, props.valueTransform))}
           </div>
         )}
       </div>
@@ -103,7 +100,7 @@ const Component = ({ mode, slot, data, namedData, props }: WidgetComponentProps<
                 labelSize={props.vertical ? 24 : 14}
                 min={props.min}
                 max={props.max}
-                value={d}
+                value={applyNumericTransform(d, props.valueTransform)}
                 format={formatNumeric}
                 majorTicksVisible={props.axisVisible}
                 majorLabelsVisible={props.axisVisible}
@@ -115,9 +112,12 @@ const Component = ({ mode, slot, data, namedData, props }: WidgetComponentProps<
       ) : props.vertical ? (
         <div className={cn("mt-3 flex h-full w-auto justify-center gap-x-4", preview && "opacity-25")}>
           {props.channels?.map((channel, index) => {
-            const v = channel.slot ? (namedData?.[channel.slot]?.value as ReturnType<typeof transform>) : undefined;
-            const isLast = index === props.channels.length - 1;
+            const slotValue = channel.slot
+              ? (namedData?.[channel.slot]?.value as ReturnType<typeof transform>)
+              : undefined;
 
+            const v = slotValue != null ? applyNumericTransform(slotValue, props.valueTransform) : undefined;
+            const isLast = index === props.channels.length - 1;
             return (
               <div
                 className="flex flex-col items-start"
@@ -169,9 +169,12 @@ const Component = ({ mode, slot, data, namedData, props }: WidgetComponentProps<
                   : "grid-cols-1"
           )}>
           {props.channels?.map((channel, index) => {
-            const v = channel.slot ? (namedData?.[channel.slot]?.value as ReturnType<typeof transform>) : undefined;
-            const isLast = index === props.channels.length - 1;
+            const slotValue = channel.slot
+              ? (namedData?.[channel.slot]?.value as ReturnType<typeof transform>)
+              : undefined;
 
+            const v = slotValue != null ? applyNumericTransform(slotValue, props.valueTransform) : undefined;
+            const isLast = index === props.channels.length - 1;
             return (
               <Fragment key={`_${index}`}>
                 {props.labelVisible && (
@@ -355,25 +358,10 @@ const Editor = ({ props, onPropsChange, ...other }: WidgetEditorProps<PropsType>
           />
         </EditorBlock>
       </div>
-      <EditorSectionHeader>Numeric formatting options</EditorSectionHeader>
-      <EditorBlock label="Maximum fraction digits">
-        <InputNumber
-          aria-label="Maximum fraction digits"
-          value={props.valueFormat?.maximumFractionDigits ?? 0}
-          onChange={(v) =>
-            onPropsChange({
-              ...props,
-              valueFormat: {
-                ...props.valueFormat,
-                maximumFractionDigits: Number.isFinite(v) ? v : 0,
-              },
-            })
-          }
-          minValue={0}
-          maxValue={3}
-          step={1}
-        />
-      </EditorBlock>
+      <EditorNumericValueBlock
+        props={props}
+        onPropsChange={onPropsChange}
+      />
     </EditorContainer>
   );
 };

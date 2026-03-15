@@ -66,7 +66,7 @@ function processDataFromChannel<P>(
     }
 
     const timestamp = records.at(-1)!.timestamp;
-    if (prevData == null || prevData.timestamp < timestamp) {
+    if (prevData == null || prevData.timestamp < timestamp || prevData.timestamp === -1) {
       return {
         timestamp,
         value: options.transform

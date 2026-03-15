@@ -14,21 +14,20 @@ import { ChartGridLine } from "./parts/ChartGridLine";
 import { EditorBlock } from "./parts/EditorBlock";
 import { EditorContainer } from "./parts/EditorContainer";
 import { EditorSectionHeader } from "./parts/EditorSectionHeader";
+import { EditorSwitchBlock } from "./parts/EditorSwitchBlock";
 import { Slot } from "./slot";
-import { withPreview } from "./utils";
+import { numericFormat, numericTransform } from "./types";
+import { applyNumericTransform, isIdentityTransform, withPreview } from "./utils";
 
 import type { DataChannelRecord, DataType } from "@2702rebels/wpidata/abstractions";
 import type { WidgetComponentProps, WidgetDescriptor, WidgetEditorProps } from "./types";
 
 const tickCount = (height: number) => (height <= 100 ? 2 : Math.min(10, Math.round(height / 40)));
 
-const numericFormat = z.object({
-  maximumFractionDigits: z.number().nonnegative().optional(),
-});
-
 const propsSchema = z.object({
   title: z.string().optional(),
   valueFormat: numericFormat.optional(),
+  valueTransform: numericTransform.optional(),
   axisFormat: numericFormat.optional(),
 });
 
@@ -89,6 +88,53 @@ const transform = (dataType: DataType, records: ReadonlyArray<DataChannelRecord>
         scaleY,
       } as const);
 };
+
+function applyTransform(d: ReturnType<typeof transform>, valueTransform: PropsType["valueTransform"]) {
+  if (d == null || isIdentityTransform(valueTransform)) {
+    return d;
+  }
+
+  let value = d.value;
+  let series = d.series;
+  let scaleY = d.scaleY;
+
+  if (value != null) {
+    value = applyNumericTransform(value, valueTransform);
+  }
+
+  if (series != null) {
+    let minY = 0; // use zero baseline
+    let maxY: number | undefined;
+
+    series = series.map((v) => {
+      const y = applyNumericTransform(v.y, valueTransform);
+      if (minY == null || minY > y) {
+        minY = y;
+      }
+
+      if (maxY == null || maxY < y) {
+        maxY = y;
+      }
+
+      return {
+        ...v,
+        y,
+      };
+    });
+
+    // rescale
+    scaleY = scaleLinear()
+      .domain([maxY ?? 0, minY])
+      .nice();
+  }
+
+  return {
+    ...d,
+    value,
+    series,
+    scaleY,
+  };
+}
 
 // custom data to use during preview
 const previewData = transform(
@@ -191,7 +237,12 @@ const WidgetChartLineContent = ({
 };
 
 const Component = ({ mode, slot, data, props }: WidgetComponentProps<PropsType>) => {
-  const [d, preview] = withPreview(mode, data as ReturnType<typeof transform>, previewData);
+  const [d, preview] = withPreview(
+    mode,
+    applyTransform(data as ReturnType<typeof transform>, props.valueTransform),
+    previewData
+  );
+
   return (
     <div className="flex h-full w-full flex-col py-2 select-none">
       <div className="mb-1 flex items-center justify-between gap-2 px-3">
@@ -270,6 +321,35 @@ const Editor = ({ props, onPropsChange }: WidgetEditorProps<PropsType>) => {
           step={1}
         />
       </EditorBlock>
+      <EditorSectionHeader>Numeric transformation options</EditorSectionHeader>
+      <EditorBlock label="Scaling factor">
+        <InputNumber
+          aria-label="Scaling factor"
+          value={props.valueTransform?.scale ?? 1}
+          onChange={(v) =>
+            onPropsChange({
+              ...props,
+              valueTransform: {
+                ...props.valueTransform,
+                scale: Number.isFinite(v) ? v : undefined,
+              },
+            })
+          }
+        />
+      </EditorBlock>
+      <EditorSwitchBlock
+        label="Use absolute value"
+        checked={props.valueTransform?.absolute}
+        onCheckedChange={(v) =>
+          onPropsChange({
+            ...props,
+            valueTransform: {
+              ...props.valueTransform,
+              absolute: v,
+            },
+          })
+        }
+      />
     </EditorContainer>
   );
 };

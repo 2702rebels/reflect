@@ -2,28 +2,25 @@ import { z } from "zod";
 
 import { Format } from "@2702rebels/shared/format";
 import { Input } from "@ui/input";
-import { InputNumber } from "@ui/input-number";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@ui/select";
 import { TruncateText } from "@ui/truncate-text";
 
 import { cn } from "../lib/utils";
 import { EditorBlock } from "./parts/EditorBlock";
 import { EditorContainer } from "./parts/EditorContainer";
-import { EditorSectionHeader } from "./parts/EditorSectionHeader";
+import { EditorNumericValueBlock } from "./parts/EditorNumericValueBlock";
 import { EditorSwitchBlock } from "./parts/EditorSwitchBlock";
 import { Slot } from "./slot";
-import { withPreview } from "./utils";
+import { numericFormat, numericTransform } from "./types";
+import { applyNumericTransform, withPreview } from "./utils";
 
 import type { DataChannelRecord, DataType } from "@2702rebels/wpidata/abstractions";
 import type { WidgetComponentProps, WidgetDescriptor, WidgetEditorProps } from "./types";
 
-const numericFormat = z.object({
-  maximumFractionDigits: z.number().nonnegative().optional(),
-});
-
 const propsSchema = z.object({
   title: z.string().optional(),
   valueFormat: numericFormat.optional(),
+  valueTransform: numericTransform.optional(),
   alignment: z.enum(["center", "start", "end"]).default("center"),
   size: z.enum(["lg", "xl", "2xl", "3xl", "4xl", "5xl"]).default("lg"),
   mono: z.boolean().default(false),
@@ -76,7 +73,7 @@ const Component = ({ mode, slot, data, props }: WidgetComponentProps<PropsType>)
           )}>
           <TruncateText>
             {typeof d === "number"
-              ? Format.default.number(d, {
+              ? Format.default.number(applyNumericTransform(d, props.valueTransform), {
                   maximumFractionDigits: props.valueFormat?.maximumFractionDigits,
                 })
               : d}
@@ -153,25 +150,10 @@ const Editor = ({ props, onPropsChange }: WidgetEditorProps<PropsType>) => {
           })
         }
       />
-      <EditorSectionHeader>Numeric formatting options</EditorSectionHeader>
-      <EditorBlock label="Maximum fraction digits">
-        <InputNumber
-          aria-label="Maximum fraction digits"
-          value={props.valueFormat?.maximumFractionDigits ?? 0}
-          onChange={(v) =>
-            onPropsChange({
-              ...props,
-              valueFormat: {
-                ...props.valueFormat,
-                maximumFractionDigits: Number.isFinite(v) ? v : 0,
-              },
-            })
-          }
-          minValue={0}
-          maxValue={3}
-          step={1}
-        />
-      </EditorBlock>
+      <EditorNumericValueBlock
+        props={props}
+        onPropsChange={onPropsChange}
+      />
     </EditorContainer>
   );
 };

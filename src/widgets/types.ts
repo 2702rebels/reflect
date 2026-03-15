@@ -1,4 +1,5 @@
-import type { z } from "zod";
+import { z } from "zod";
+
 import type {
   DataChannelPublisherOptions,
   DataChannelRecord,
@@ -116,4 +117,18 @@ export type WidgetPropsWithMultipleChannels = {
     label?: string;
     slot?: string;
   }>;
+};
+
+export const numericFormat = z.object({
+  maximumFractionDigits: z.number().nonnegative().optional(),
+});
+
+export const numericTransform = z.object({
+  absolute: z.boolean().optional(),
+  scale: z.number().optional(),
+});
+
+export type WidgetPropsWithNumericValue = {
+  valueFormat?: z.infer<typeof numericFormat>;
+  valueTransform?: z.infer<typeof numericTransform>;
 };

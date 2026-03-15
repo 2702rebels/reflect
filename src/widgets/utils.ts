@@ -14,7 +14,7 @@ import type {
   Rotation2dStruct,
   Rotation3dStruct,
 } from "@2702rebels/wpidata/types/struct";
-import type { WidgetDescriptorSlot } from "./types";
+import type { WidgetDescriptorSlot, WidgetPropsWithNumericValue } from "./types";
 
 export interface Quaternion {
   readonly w: number;
@@ -45,9 +45,7 @@ export interface Rotation3d {
 // https://github.com/wpilibsuite/allwpilib/blob/main/wpimath/algorithms.md#quaternion-to-euler-angle-conversion
 // https://github.com/wpilibsuite/allwpilib/blob/main/wpimath/src/main/java/edu/wpi/first/math/geometry/Rotation3d.java
 
-/**
- * Returns the ccw rotation angle around the X axis (roll) in radians.
- */
+/** Returns the ccw rotation angle around the X axis (roll) in radians. */
 export function getRoll(q: Quaternion) {
   const cxcy = 1.0 - 2.0 * (q.x * q.x + q.y * q.y);
   const sxcy = 2.0 * (q.w * q.x + q.y * q.z);
@@ -59,9 +57,7 @@ export function getRoll(q: Quaternion) {
   }
 }
 
-/**
- * Returns the ccw rotation angle around the Y axis (pitch) in radians.
- */
+/** Returns the ccw rotation angle around the Y axis (pitch) in radians. */
 export function getPitch(q: Quaternion) {
   const ratio = 2.0 * (q.w * q.y - q.z * q.x);
   if (Math.abs(ratio) >= 1.0) {
@@ -71,9 +67,7 @@ export function getPitch(q: Quaternion) {
   }
 }
 
-/**
- * Returns the ccw rotation angle around the Z axis (yaw) in radians.
- */
+/** Returns the ccw rotation angle around the Z axis (yaw) in radians. */
 export function getYaw(q: Quaternion) {
   const cycz = 1.0 - 2.0 * (q.y * q.y + q.z * q.z);
   const cysz = 2.0 * (q.w * q.z + q.x * q.y);
@@ -85,9 +79,7 @@ export function getYaw(q: Quaternion) {
   }
 }
 
-/**
- * Converts value in radians to degrees.
- */
+/** Converts value in radians to degrees. */
 export function toDegrees(radians: number) {
   return (180 * radians) / Math.PI;
 }
@@ -95,9 +87,7 @@ export function toDegrees(radians: number) {
 const zeroPose2d: Pose2d = { x: 0, y: 0, theta: 0 };
 const zeroRotation3d: Rotation3d = { x: 0, y: 0, z: 0 };
 
-/**
- * Constructs {@link Pose2d} from the raw value.
- */
+/** Constructs {@link Pose2d} from the raw value. */
 export function toPose2d(value: unknown, structuredType?: StructuredTypeDescriptor): Pose2d {
   if (value == null) {
     return zeroPose2d;
@@ -183,9 +173,7 @@ export function toPose2d(value: unknown, structuredType?: StructuredTypeDescript
   return zeroPose2d;
 }
 
-/**
- * Constructs {@link Rotation3d} from the raw value.
- */
+/** Constructs {@link Rotation3d} from the raw value. */
 export function toRotation3d(value: unknown, structuredType?: StructuredTypeDescriptor): Rotation3d {
   if (value == null) {
     return zeroRotation3d;
@@ -350,9 +338,7 @@ export function toRotation3d(value: unknown, structuredType?: StructuredTypeDesc
   return zeroRotation3d;
 }
 
-/**
- * Returns actual data or preview data depending on the mode.
- */
+/** Returns actual data or preview data depending on the mode. */
 export function withPreview<T>(mode: "template" | "design" | undefined, data: T | undefined, previewData: T) {
   if (mode === "template") {
     return [previewData, true] as const;
@@ -365,9 +351,7 @@ export function withPreview<T>(mode: "template" | "design" | undefined, data: T 
   return [data, false] as const;
 }
 
-/**
- * Determines whether the widget data slot accepts the data channel.
- */
+/** Determines whether the widget data slot accepts the data channel. */
 export function canAccept(slot: WidgetDescriptorSlot | null | undefined, channel: DataChannel) {
   // assume anything goes if there is no slot specification
   if (slot == null) {
@@ -400,4 +384,27 @@ export function canAccept(slot: WidgetDescriptorSlot | null | undefined, channel
   }
 
   return slot.accepts.primitive != null && slot.accepts.primitive.includes(channel.dataType);
+}
+
+/** Returns transformed numeric value. */
+export function applyNumericTransform(value: number, transform: WidgetPropsWithNumericValue["valueTransform"]) {
+  let v = value;
+  if (transform) {
+    if (transform.absolute) {
+      v = Math.abs(v);
+    }
+    if (transform.scale != null) {
+      v *= transform.scale;
+    }
+  }
+
+  return v;
+}
+
+/** Determines whether transform represents an identity (trivial) transform. */
+export function isIdentityTransform(transform: WidgetPropsWithNumericValue["valueTransform"]) {
+  return (
+    transform == null ||
+    ((transform.absolute == null || !transform.absolute) && (transform.scale == null || transform.scale === 1))
+  );
 }

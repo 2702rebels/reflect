@@ -257,7 +257,7 @@ export const ViewportPane = ({
     <div
       ref={composeRefs(ref, container)}
       data-scroll="pan"
-      className="absolute inset-0 z-10 h-full w-full data-[scroll=pan]:cursor-grab">
+      className="absolute inset-0 z-10 h-full w-full overflow-hidden data-[scroll=pan]:cursor-grab">
       <div
         className="pointer-events-none absolute inset-0 h-full w-full origin-top-left"
         style={{ transform }}>
