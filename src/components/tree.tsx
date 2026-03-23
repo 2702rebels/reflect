@@ -87,7 +87,7 @@ const TreeItem = <T,>({
             <AccordionPrimitive.Root
               type="single"
               collapsible
-              defaultValue={d.id}>
+              >
               <AccordionPrimitive.Item value={d.id}>
                 <AccordionTrigger
                   className="p-2 before:absolute before:left-0 before:-z-10 before:h-9 before:w-full before:bg-muted/80 before:opacity-0 hover:before:opacity-100 data-[selected='true']:text-accent-foreground data-[selected='true']:before:border-l-2 data-[selected='true']:before:border-l-accent-foreground/60 data-[selected='true']:before:bg-accent/80 data-[selected='true']:before:opacity-100"
